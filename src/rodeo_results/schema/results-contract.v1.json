@@ -1,0 +1,422 @@
+{
+  "$defs": {
+    "CaseEvent": {
+      "additionalProperties": false,
+      "description": "One line of ``cases.jsonl``. ``total`` (optional, on any event) is how many cases the run\nwill execute when the runner knows it; ``status`` and ``duration_s`` belong to ``case_finished``.",
+      "properties": {
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "duration_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration S"
+        },
+        "event": {
+          "$ref": "#/$defs/CaseEventKind"
+        },
+        "message": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Message",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CaseStatus"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "total": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Total"
+        }
+      },
+      "required": [
+        "event",
+        "name",
+        "at"
+      ],
+      "title": "CaseEvent",
+      "type": "object"
+    },
+    "CaseEventKind": {
+      "enum": [
+        "case_started",
+        "case_finished"
+      ],
+      "title": "CaseEventKind",
+      "type": "string"
+    },
+    "CaseResult": {
+      "additionalProperties": false,
+      "properties": {
+        "artifacts": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ResultArtifact"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        },
+        "duration_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration S"
+        },
+        "message": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Message",
+          "type": "string"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Metrics",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "observations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ResultObservation"
+          },
+          "title": "Observations",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/CaseStatus"
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "status"
+      ],
+      "title": "CaseResult",
+      "type": "object"
+    },
+    "CaseStatus": {
+      "enum": [
+        "passed",
+        "failed",
+        "skipped",
+        "errored"
+      ],
+      "title": "CaseStatus",
+      "type": "string"
+    },
+    "ResultArtifact": {
+      "additionalProperties": false,
+      "description": "A file the runner wants kept as evidence. ``path`` is relative to the results directory\n(POSIX separators, never escaping it); ``kind`` is one of the platform's artifact kinds\n(``result``, ``telemetry``, ``event_log``, ``log``, ``image``, ``video``, ``build_output``,\n``report``, ``bundle``; anything else is stored as ``log``).",
+      "properties": {
+        "content_type": {
+          "default": "application/octet-stream",
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Content Type",
+          "type": "string"
+        },
+        "kind": {
+          "default": "log",
+          "maxLength": 40,
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "ResultArtifact",
+      "type": "object"
+    },
+    "ResultObservation": {
+      "additionalProperties": false,
+      "description": "Something the runner noticed: a line of text (``text``), a value (``value``) or both, at\nan optional time. ``kind`` follows the platform's observation kinds (``log``, ``metric``,\n``measurement``, ``telemetry``, ``event_log``, ``image``, ``video``).",
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "kind": {
+          "default": "log",
+          "maxLength": 40,
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Name",
+          "type": "string"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "title": "ResultObservation",
+      "type": "object"
+    },
+    "ResultsSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_s": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration S"
+        },
+        "errored": {
+          "minimum": 0,
+          "title": "Errored",
+          "type": "integer"
+        },
+        "failed": {
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Metrics",
+          "type": "object"
+        },
+        "passed": {
+          "minimum": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "skipped": {
+          "minimum": 0,
+          "title": "Skipped",
+          "type": "integer"
+        },
+        "total": {
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total",
+        "passed",
+        "failed",
+        "skipped",
+        "errored"
+      ],
+      "title": "ResultsSummary",
+      "type": "object"
+    },
+    "SuiteStatus": {
+      "enum": [
+        "passed",
+        "failed",
+        "errored",
+        "aborted"
+      ],
+      "title": "SuiteStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://rodeo.dev/schemas/results-contract.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "``results.json``: the outcome of one suite run under the results contract v1.",
+  "properties": {
+    "artifacts": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ResultArtifact"
+      },
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "cases": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/CaseResult"
+      },
+      "title": "Cases",
+      "type": "array"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Finished At"
+    },
+    "observations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ResultObservation"
+      },
+      "title": "Observations",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "rodeo.results.v1",
+      "default": "rodeo.results.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/SuiteStatus"
+    },
+    "suite": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Suite",
+      "type": "string"
+    },
+    "summary": {
+      "$ref": "#/$defs/ResultsSummary"
+    }
+  },
+  "required": [
+    "suite",
+    "started_at",
+    "status",
+    "summary"
+  ],
+  "title": "Rodeo results contract v1",
+  "type": "object"
+}

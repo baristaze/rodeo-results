@@ -1,0 +1,59 @@
+[project]
+name = "rodeo-results"
+version = "0.1.0"
+description = "Emit, convert and validate the Rodeo results contract (rodeo.results.v1) from any test harness."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Baris Taze" }]
+keywords = ["rodeo", "robotics", "test-results", "junit", "pytest"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = ["jsonschema>=4.18"]
+
+[project.urls]
+Homepage = "https://github.com/baristaze/rodeo-results"
+Changelog = "https://github.com/baristaze/rodeo-results/blob/main/CHANGELOG.md"
+
+[project.scripts]
+rodeo-results = "rodeo_results.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rodeo_results"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/rodeo_results", "tests", "README.md", "CHANGELOG.md", "LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = [".", "src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["RUF012"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["rodeo_results"]
+
+[tool.ruff.format]
+quote-style = "double"
